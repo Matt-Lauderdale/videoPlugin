@@ -1,0 +1,205 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style type="text/css">
+  .video-container {
+    display: none;
+  }
+  #scheduleDelivery {
+    width: 100%;
+    height: auto;
+  }
+  .inline-wrapper {
+    position: relative;
+    display: none;
+    width: 100%;
+    height: auto;
+  }
+  .inline-wrapper.active {
+    display: inline-block;
+  }
+  .overlay-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: none;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    zoom: 1;
+}
+.overlay-background {
+  position: absolute;
+  display: table;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+    background:rgb(215,215,215);
+  background: transparent\9;
+  background:rgba(215,215,215,0.5);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7fd7d7d7,endColorstr=#7fd7d7d7);
+  zoom: 1;
+}
+.overlay-background:nth-child(n) {
+  filter: none;
+}
+.overlay-wrapper.active {
+  display: table;
+}
+.video-skin, .video-background-wrapper {
+  position: relative;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+.video-wrapper {
+  margin: 0 auto;
+}
+.play-video {
+  width: 150px;
+  height: auto;
+}
+.play-video img {
+  width: 100%;
+  height: auto;
+}
+.video-background-image {
+  display: none;
+  width: 500px;
+  height: 350px;
+  background: url('http://www.havertys.com/wcsstore/Havertys/images/bkg-flvContainer.gif') no-repeat center center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  margin: 0 auto;
+}
+#video {
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 1001;
+}
+  </style>
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+  <div class="container">
+    <div class='play-video' onclick="playVideo(this)">
+      <img src="http://iconshots.com/wp-content/uploads/2010/01/final1.jpg">
+    </div>
+    <div class="inline-wrapper">
+      <div class="video-wrapper"></div>
+    </div>
+    <div class="video-container">
+      <video id="video" controls>
+        <source src="http://www.havertys.com/wcsstore/Html/common/video/WhatToExpectDuringDelivery.mp4" type="video/mp4" />
+        <source src="http://www.havertys.com/wcsstore/Html/common/video/WhatToExpectDuringDelivery.webm" type="video/webm" />
+        <source src="http://www.havertys.com/wcsstore/Html/common/video/WhatToExpectDuringDelivery.ogg" type="video/ogg" />
+        <!-- Flash Fallback -->
+        <object>
+        <param name="wmode" value="transparent" value="WhatToExpectDuringDelivery.swf" />
+        <embed width="270" height="216" flashvars="skinURL=https://www.havertys.com/wcsstore/Havertys/skins/Controls.swf&amp;videoURL=rtmp://video.havertys.com/vod/Havertys_WhatToExpectDuringDelivery.flv" wmode="transparent" allowfullscreen="true" allowscriptaccess="always" quality="true" bgcolor="#ffffff" name="VideoPlayer" id="VideoPlayer" style="undefined" src="https://www.havertys.com/wcsstore/Havertys/skins/PlayerPause.swf?1394043197650" type="application/x-shockwave-flash">
+        
+        </object>
+      </video>
+    </div>
+  </div>
+
+  <div class="overlay-wrapper">
+    <div class="overlay-background active" onclick="collapseOverlay();">
+      <div class="video-background-wrapper">
+        <div class="video-background-image"></div>
+      </div>
+    </div>
+    <div class="video-skin">
+      <div class='video-wrapper overlay'></div>
+    </div>
+  </div>
+
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script>
+    var video = $('.video-container').html();
+    var posterSrc       = 'http://iconshots.com/wp-content/uploads/2010/01/final1.jpg'; //source of video poster image
+    var width           = 500; //width of video
+    var padding         = 0; //padding of video container
+    var poster          = false; //show poster (true); no poster (false)
+    var overlay         = false; //show overlay (true); display inline (false)
+    var backgroundImage = true; //show 'havertys videos' frame behind video
+    var displayVideo    = false;//show video on page load (true); display image in place of video on  page load (false)
+    function playVideo(element){
+      
+      if (overlay) {
+        var videoContent = $('.video-wrapper').html();
+        if (!videoContent) {
+          $('.overlay-wrapper').addClass('active');
+          $('.video-wrapper').html(video);
+          $('.video-wrapper').css({
+            'width': width+'px',
+            'padding': padding+'px'
+          });
+          if (poster) {
+            $('.video-wrapper #video').attr('poster', posterSrc)
+          };
+          if (backgroundImage) {
+            var bgImageWidth = width*1.6;
+            var videoHeight = $('.video-wrapper.overlay').outerHeight();
+            var bgImageHeight = width*1.1;
+            $('.video-background-image').css({
+              'display': 'inline-block',
+              'width': bgImageWidth,
+              'height': bgImageHeight
+            });
+          };
+        }
+        else {
+          $('.overlay-wrapper').addClass('active');
+          if (poster) {
+            $('.video-wrapper #video').attr('poster', posterSrc)
+          };
+        }
+        
+      }
+      if (!overlay) {
+        $(element).next().addClass('active').html(video);
+        $('.inline-wrapper').css({
+          'width': width+'px',
+          'padding': padding+'px'
+        });
+        $(element).css('display','none');
+      }
+    }
+    function inlineVideoOption(vid){
+      if (displayVideo) {
+        $('.video-wrapper').html(video);
+        $('.inline-wrapper').css({
+          'width': width+'px',
+          'display': 'inline-block'
+        });
+        $('.play-video').css('display','none');
+          if (poster) {
+            $('.video-wrapper #video').attr('poster', posterSrc);
+          };
+      }
+      else {
+        $('.play-video').css('display','inline-block')
+      };
+    }
+    function collapseOverlay(e){
+      $('.overlay-wrapper').removeClass('active');
+      
+    }
+    $(document).ready(function(){
+        inlineVideoOption();
+    })
+    </script>
+</body>
+</html>
